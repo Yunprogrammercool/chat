@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chatbot Demo</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <h1>Chatbot Demo</h1>
+        <div id="chat-container"></div>
+        <form id="chat-form">
+            <input type="text" id="chat-input" placeholder="Type your message here...">
+            <button type="submit">Send</button>
+        </form>
+        
+        <script>
+            $(document).ready(function() {
+                var chatContainer = $('#chat-container');
+                var chatForm = $('#chat-form');
+                var chatInput = $('#chat-input');
+
+                // Add a message to the chat container
+                function addMessage(sender, message) {
+                    var messageElement = $('<div></div>').addClass('message');
+                    var senderElement = $('<div></div>').addClass('sender').text(sender + ':');
+                    var contentElement = $('<div></div>').addClass('content').text(message);
+                    messageElement.append(senderElement, contentElement);
+                    chatContainer.append(messageElement);
+                }
+
+                // Send a message to the chatbot
+                function sendMessage(message) {
+                    $.post('/message', {message: message}, function(response) {
+                        addMessage('Chatbot', response);
+                        chatInput.val('');
+                    });
+                }
+
+                // Handle the form submission
+                chatForm.submit(function(event) {
+                    event.preventDefault();
+                    var message = chatInput.val();
+                    addMessage('You', message);
+                    sendMessage(message);
+                });
+            });
+        </script>
+    </body>
+</html>
